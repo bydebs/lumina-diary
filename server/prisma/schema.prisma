@@ -1,0 +1,49 @@
+datasource db {
+    provider = "postgresql"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id       String   @id @default(uuid())
+    username String   @unique
+    password String
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+    diaries  Diary[]
+}
+
+model Diary {
+    id       String   @id @default(uuid())
+    title    String
+    userID   String
+    user     User     @relation(fields: [userID], references: [id], onDelete: Cascade)
+    pages    Page[]
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+}
+
+model Page {
+    id          String   @id @default(uuid())
+    title       String
+    subtitle    String?
+    date        DateTime @default(now())
+    textContent String?
+
+    drawings String?
+    images   String?
+
+    fontColor  String?
+    fontFamily String?
+    fontStyle  String?
+    alignment  String?
+    position   String?
+
+    diaryId String
+    diary   Diary  @relation(fields: [diaryId], references: [id], onDelete: Cascade)
+
+    createAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+}
